@@ -1,6 +1,23 @@
 package own_interfaces
 
 type IAutomataCellular interface {
-	Transition() error
-	GetCell(position IPosition) ICell
+	Transition() *IAutomataCellular
+	GetCell(position IPosition) (*ICell, bool)
+	GetId() uint
+	GetBoard() interface{}
 }
+
+/***
+
+This is pattern
+1,2,1
+1,x,1
+1,1,1
+
+Position, State
+pattern = {((0,1),true)}
+
+
+
+cell.position + pattron
+*/

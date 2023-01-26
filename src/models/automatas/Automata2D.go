@@ -1,4 +1,4 @@
-package models
+package automatas
 
 type Automata2D struct {
 }

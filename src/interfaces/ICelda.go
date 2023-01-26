@@ -1,16 +1,16 @@
 package own_interfaces
 
 type ICell interface {
-	Transition() error
-	GetPosition() IPosition
+	SetState(state bool)
+	GetPosition() *IPosition
 	GetState() bool
 }
 
 type IPosition interface {
-	Append(position IPosition) IPosition
+	Translate(position *IPosition) IPosition
 	GetPosition() interface{}
 }
 
 type IPattern interface {
-	Check(automata IAutomataCellular, cell ICell) bool
+	Check(automata IAutomataCellular, cell *ICell) bool
 }

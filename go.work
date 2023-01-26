@@ -8,3 +8,5 @@ use src/logic
 use src/models
 
 use src/models/automatas
+
+use test
