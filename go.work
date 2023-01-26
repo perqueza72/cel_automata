@@ -1,0 +1,10 @@
+go 1.19
+
+
+use src/interfaces
+
+use src/logic
+
+use src/models
+
+use src/models/automatas
