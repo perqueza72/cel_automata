@@ -1,1 +1,3 @@
-don't read me!
+To execute server run:
+
+go run src/main.go
