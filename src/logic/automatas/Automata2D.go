@@ -45,7 +45,7 @@ func (at *Automata2D) GetCell(pos IPosition) (*ICell, bool) {
 	return nil, false
 }
 
-func Copy2D(at *Automata2D) *Automata2D {
+func (at *Automata2D) Copy() *IAutomataCellular {
 	neo_board := make([][]ICell, len(at.board))
 
 	for i := 0; i < len(at.board); i++ {
@@ -56,16 +56,19 @@ func Copy2D(at *Automata2D) *Automata2D {
 		}
 	}
 
-	return NewAutomata2D(neo_board, at.pattern, at.id)
+	n := NewAutomata2D(neo_board, at.pattern, at.id)
+	automata := IAutomataCellular(n)
+
+	return &automata
 }
 
 func (at *Automata2D) Transition() *IAutomataCellular {
-	prev_automata := Copy2D(at)
+	prev_automata := at.Copy()
 
 	for i := 0; i < len(at.board); i++ {
 
 		for j := 0; j < len(at.board[i]); j++ {
-			state := (*at.pattern).Check(prev_automata, &at.board[i][j])
+			state := (*at.pattern).Check(*prev_automata, &at.board[i][j])
 			at.board[i][j].SetState(state)
 		}
 	}
