@@ -33,28 +33,32 @@ func (automata *Automata1D) GetId() uint {
 	return automata.id
 }
 
-func Copy(a *Automata1D) *Automata1D {
+func (a *Automata1D) Copy() *IAutomataCellular {
 	neo_board := make([]ICell, 0)
 
 	for i := 0; i < len(a.board); i++ {
 		neo_board = append(neo_board, logic.NewCell(a.board[i].GetState(), *a.board[i].GetPosition()))
 	}
-	return NewAutomata1D(neo_board, a.pattern, a.id)
+
+	automata := NewAutomata1D(neo_board, a.pattern, a.id)
+	r := IAutomataCellular(automata)
+	return &r
 }
 
 func (automata *Automata1D) Transition() *IAutomataCellular {
-	prev_automata := Copy(automata)
+	prev_automata := automata.Copy()
 
 	for _, cell := range automata.board {
 
-		state := (*automata.pattern).Check(prev_automata, &cell)
+		state := (*automata.pattern).Check(*prev_automata, &cell)
 		cell.SetState(state)
 	}
 
-	new_automata := Copy(automata)
-	new_automata.id = automata.id + 1
-	r := IAutomataCellular(new_automata)
-	return &r
+	new_automata := automata.Copy()
+	fmt.Println("automata ", (*new_automata).GetId())
+	automata.id = automata.id + 1
+
+	return new_automata
 }
 
 func (automata Automata1D) GetBoard() interface{} {

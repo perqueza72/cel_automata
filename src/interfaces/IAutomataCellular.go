@@ -5,6 +5,7 @@ type IAutomataCellular interface {
 	GetCell(position IPosition) (*ICell, bool)
 	GetId() uint
 	GetBoard() interface{}
+	Copy() *IAutomataCellular
 }
 
 /***
