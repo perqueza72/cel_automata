@@ -26,15 +26,16 @@ func (timelaps *TimeLaps) Next() *IAutomataCellular {
 	automata := timelaps.actual_automata
 
 	if int((*automata).GetId()+1) == len(timelaps.Automatas) {
-		prev_automata := (*automata).Copy()
-		timelaps.Automatas[len(timelaps.Automatas)-1] = prev_automata
+		timelaps.Automatas[len(timelaps.Automatas)-1] = (*automata).Copy()
 
 		new_automata := (*automata).Transition()
 		timelaps.Automatas = append(timelaps.Automatas, new_automata)
 		return new_automata
 	}
 
-	return timelaps.Automatas[(*automata).GetId()+1]
+	*automata = *timelaps.Automatas[(*automata).GetId()+1]
+
+	return automata
 }
 
 func (timeLaps *TimeLaps) Previous() *IAutomataCellular {
@@ -43,8 +44,9 @@ func (timeLaps *TimeLaps) Previous() *IAutomataCellular {
 	if (*automata).GetId() == 0 {
 		return timeLaps.actual_automata
 	}
+	*automata = *timeLaps.Automatas[(*automata).GetId()-1]
 
-	return timeLaps.Automatas[(*automata).GetId()-1]
+	return automata
 }
 
 func (timeLaps TimeLaps) Get(id uint) *IAutomataCellular {
