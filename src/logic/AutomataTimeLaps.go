@@ -1,6 +1,9 @@
-package models
+package logic
 
-import . "own_interfaces"
+import (
+	"fmt"
+	. "own_interfaces"
+)
 
 type ITimeLaps interface {
 	Next() *IAutomataCellular
@@ -13,11 +16,21 @@ type TimeLaps struct {
 	actual_automata *IAutomataCellular
 }
 
+func NewTimeLaps(automata *IAutomataCellular) *TimeLaps {
+	return &TimeLaps{
+		Automatas:       []*IAutomataCellular{automata},
+		actual_automata: automata,
+	}
+}
+
 func (timelaps *TimeLaps) Next() *IAutomataCellular {
 	automata := timelaps.actual_automata
 
-	if automata == timelaps.Automatas[len(timelaps.Automatas)-1] {
-		return (*automata).Transition()
+	if int((*automata).GetId()+1) == len(timelaps.Automatas) {
+		new_automata := (*automata).Transition()
+		fmt.Println((*new_automata).GetId())
+		timelaps.Automatas = append(timelaps.Automatas, new_automata)
+		return new_automata
 	}
 
 	return timelaps.Automatas[(*automata).GetId()+1]

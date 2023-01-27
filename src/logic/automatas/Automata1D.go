@@ -1,7 +1,7 @@
 package automatas
 
 import (
-	models "automata_models"
+	logic "automata_logic"
 	"fmt"
 	. "own_interfaces"
 )
@@ -12,7 +12,7 @@ type Automata1D struct {
 	id      uint
 }
 
-func NewAutomata(board []ICell, pattern *IPattern, id uint) *Automata1D {
+func NewAutomata1D(board []ICell, pattern *IPattern, id uint) *Automata1D {
 	return &Automata1D{
 		board:   board,
 		pattern: pattern,
@@ -37,9 +37,9 @@ func Copy(a *Automata1D) *Automata1D {
 	neo_board := make([]ICell, 0)
 
 	for i := 0; i < len(a.board); i++ {
-		neo_board = append(neo_board, models.NewCell1D(a.board[i].GetState(), *a.board[i].GetPosition()))
+		neo_board = append(neo_board, logic.NewCell(a.board[i].GetState(), *a.board[i].GetPosition()))
 	}
-	return NewAutomata(neo_board, a.pattern, a.id)
+	return NewAutomata1D(neo_board, a.pattern, a.id)
 }
 
 func (automata *Automata1D) Transition() *IAutomataCellular {
@@ -51,7 +51,9 @@ func (automata *Automata1D) Transition() *IAutomataCellular {
 		cell.SetState(state)
 	}
 
-	r := IAutomataCellular(automata)
+	new_automata := Copy(automata)
+	new_automata.id = automata.id + 1
+	r := IAutomataCellular(new_automata)
 	return &r
 }
 

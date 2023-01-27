@@ -1,3 +1,3 @@
-module logic_automata
+module automata_logic
 
 go 1.19

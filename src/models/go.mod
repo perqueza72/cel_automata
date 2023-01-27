@@ -1,3 +1,3 @@
-module automata_models
+module models_automata
 
 go 1.19

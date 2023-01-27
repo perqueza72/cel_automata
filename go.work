@@ -7,6 +7,10 @@ use src/logic
 
 use src/models
 
-use src/models/automatas
+use src/logic/automatas
 
 use test
+
+use src/mappers
+
+use src/handlers
