@@ -38,11 +38,11 @@ func NewPosition2D(row, col int) *Position2D {
 }
 
 func (p Position2D) GetPosition() interface{} {
-	return [2]int{p.Row, p.Col}
+	return []int{p.Row, p.Col}
 }
 
 func (p Position2D) Translate(q *IPosition) IPosition {
-	position := (*q).GetPosition().([2]int)
+	position := (*q).GetPosition().([]int)
 	neo_row := p.Row + position[0]
 	neo_col := p.Col + position[1]
 

@@ -73,8 +73,10 @@ func (at *Automata2D) Transition() *IAutomataCellular {
 		}
 	}
 
-	r := IAutomataCellular(at)
-	return &r
+	new_automata := at.Copy()
+	at.id = at.id + 1
+
+	return new_automata
 }
 
 func (at *Automata2D) GetBoard() interface{} {
