@@ -87,7 +87,6 @@ func TestAutomatonTimeLapsGet(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		timeLaps.Next()
-		t.Log(len(timeLaps.Automatas))
 	}
 
 	got := (*timeLaps.Get(0)).GetBoard().([]bool)

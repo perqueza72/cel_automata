@@ -1,6 +1,8 @@
 package own_interfaces
 
 type IAutomataCellular interface {
+	//Transition creates the new state of automata and return it.
+	//Also, IAutomataCellular's pointer move forward this new state.
 	Transition() *IAutomataCellular
 	GetCell(position IPosition) (*ICell, bool)
 	GetId() uint

@@ -54,8 +54,8 @@ func (automata *Automata1D) Transition() *IAutomataCellular {
 		cell.SetState(state)
 	}
 
-	new_automata := automata.Copy()
 	automata.id = automata.id + 1
+	new_automata := automata.Copy()
 
 	return new_automata
 }
