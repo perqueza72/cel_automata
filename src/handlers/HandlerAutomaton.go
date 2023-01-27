@@ -10,11 +10,17 @@ import (
 	"strconv"
 )
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 type AutomatonHandler struct {
 	timeLaps logic.ITimeLaps
 }
 
 func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
 	body_automaton := models.Automaton1D{}
 
 	if err := json.NewDecoder(r.Body).Decode(&body_automaton); err != nil {
@@ -32,6 +38,8 @@ func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Req
 }
 
 func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
 		return
@@ -42,6 +50,8 @@ func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
 		return
@@ -53,6 +63,7 @@ func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
@@ -74,6 +85,8 @@ func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AutomatonHandler) HandlerAutomaton2D(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
 	body_automaton := models.Automaton2D{}
 
 	if err := json.NewDecoder(r.Body).Decode(&body_automaton); err != nil {
