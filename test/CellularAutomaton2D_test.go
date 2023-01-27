@@ -14,130 +14,160 @@ func initCell2D(row, col int, state bool) ICell {
 	return cell
 }
 
-func initPattern2D() IPattern {
+func initCell2DOn(row, col int) ICell {
+	return initCell2D(row, col, true)
+}
 
-	a := initCell2D(-1, 0, true)
-	b := initCell2D(1, 0, true)
+func initPattern2D(positions [][]int) IPattern {
 
-	cells := make([]*ICell, 2)
-	cells[0] = &a
-	cells[1] = &b
+	cells := make([]*ICell, len(positions))
+	for i, p := range positions {
+		cell := initCell2DOn(p[0], p[1])
+		cells[i] = &cell
+	}
+
 	pattern := logic.NewPattern(cells)
 
 	return pattern
 }
 
-func initAutomata2D() IAutomataCellular {
-	states := [5]bool{true, false, true, false, false}
+func initAutomata2D(pattern IPattern, board [][]bool) IAutomataCellular {
+	cells := make([][]ICell, len(board))
 
-	cells := make([][]ICell, 5)
+	for i := 0; i < len(cells); i++ {
 
-	for i := 0; i < len(states); i++ {
-		row := make([]ICell, 5)
+		row := make([]ICell, len(board))
 		for j := range row {
-			cell := initCell2D(i, j, states[j])
+			cell := initCell2D(i, j, board[i][j])
 			row[j] = cell
 		}
 		cells[i] = row
 	}
 
-	pattern := initPattern2D()
 	return automatas.NewAutomata2D(cells, &pattern, 0)
+}
+
+func InitialState() (IAutomataCellular, [][]bool) {
+	positions := [][]int{{-1, 0}, {1, 0}, {0, 1}, {0, -1}}
+	board := [][]bool{
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+		{false, true, false, true, false}}
+	pattern := initPattern2D(positions)
+	automata := initAutomata2D(pattern, board)
+
+	return automata, board
+}
+
+func PossibleStates() [][][]bool {
+	states := make([][][]bool, 2)
+	states[0] = [][]bool{
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+		{false, true, false, true, false}}
+
+	states[1] = [][]bool{
+		{true, false, true, false, true},
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+		{false, true, false, true, false},
+		{true, false, true, false, true},
+	}
+
+	return states
 }
 
 func TestAutomaton2D(t *testing.T) {
 
-	automata := initAutomata2D()
-	t.Log(automata.GetBoard())
+	automata, board := InitialState()
+	states := PossibleStates()
+
+	t.Logf("Initial board: %v\n", automata.GetBoard().([][]bool))
+	Automaton2DCorrectnessChecker(t, automata.GetBoard().([][]bool), board)
+
 	new_automata := automata.Transition()
 
 	got := (*new_automata).GetBoard().([][]bool)
-	expected := [][]bool{
-		{false, true, false, false, false},
-		{false, true, false, false, false},
-		{false, true, false, false, false},
-		{false, true, false, false, false},
-		{false, true, false, false, false}}
+	expected := states[1]
 
 	Automaton2DCorrectnessChecker(t, got, expected)
 }
 
-func Automaton2DCorrectnessChecker(t *testing.T, got [][]bool, expected [][]bool) {
+func Automaton2DCorrectnessChecker(t *testing.T, got [][]bool, expected [][]bool) bool {
+	work := true
+
 	for i := range got {
 		for j := range got[i] {
 
 			if got[i][j] != expected[i][j] {
 				t.Errorf("In index %v got %v, whanted %v\n", i, got[i][j], expected[i][j])
 				t.Fail()
+				work = false
 			}
 		}
 	}
+
+	return work
 }
 
 func TestAutomaton2DTimeLapsNext(t *testing.T) {
-	automata := initAutomata()
+	automata, _ := InitialState()
+	states := PossibleStates()
 
 	timeLaps := logic.NewTimeLaps(&automata)
-	got := (*timeLaps.Next()).GetBoard().([]bool)
-	expected := []bool{false, true, false, false, false}
+	got := (*timeLaps.Next()).GetBoard().([][]bool)
+	expected := states[1]
 
-	AutomatonCorrectnessChecker(t, got, expected)
+	Automaton2DCorrectnessChecker(t, got, expected)
 
-	got = (*timeLaps.Next()).GetBoard().([]bool)
-	expected = []bool{true, false, false, false, false}
-	AutomatonCorrectnessChecker(t, got, expected)
+	got = (*timeLaps.Next()).GetBoard().([][]bool)
+	expected = states[0]
+	Automaton2DCorrectnessChecker(t, got, expected)
 
-	got = (*timeLaps.Next()).GetBoard().([]bool)
-	expected = []bool{false, false, false, false, false}
-	AutomatonCorrectnessChecker(t, got, expected)
+	got = (*timeLaps.Next()).GetBoard().([][]bool)
+	expected = states[1]
+	Automaton2DCorrectnessChecker(t, got, expected)
 
 }
 
 func TestAutomaton2DTimeLapsGet(t *testing.T) {
-	automata := initAutomata()
-
+	automata, _ := InitialState()
 	timeLaps := logic.NewTimeLaps(&automata)
+	states := PossibleStates()
 
-	for i := 0; i < 100; i++ {
+	ITERATIONS := 100
+
+	for i := 0; i < ITERATIONS; i++ {
 		timeLaps.Next()
-		t.Log(len(timeLaps.Automatas))
 	}
 
-	got := (*timeLaps.Get(0)).GetBoard().([]bool)
-	expected := []bool{true, false, true, false, false}
-	t.Log("In id 0\n")
-	AutomatonCorrectnessChecker(t, got, expected)
+	fault_cases := []int{}
 
-	got = (*timeLaps.Get(1)).GetBoard().([]bool)
-	expected = []bool{false, true, false, false, false}
-	t.Log("In id 1\n")
-	AutomatonCorrectnessChecker(t, got, expected)
+	for i := 0; i <= ITERATIONS; i++ {
+		got := (*timeLaps.Get(uint(i))).GetBoard().([][]bool)
+		expected := states[i%2]
+		if Automaton2DCorrectnessChecker(t, got, expected) {
+			fault_cases = append(fault_cases, i)
+		}
+	}
 
-	got = (*timeLaps.Get(2)).GetBoard().([]bool)
-	expected = []bool{true, false, false, false, false}
-	t.Log("In id 2\n")
-	AutomatonCorrectnessChecker(t, got, expected)
-
-	got = (*timeLaps.Get(3)).GetBoard().([]bool)
-	expected = []bool{false, false, false, false, false}
-	t.Log("In id 3\n")
-	AutomatonCorrectnessChecker(t, got, expected)
-
-	got = (*timeLaps.Get(70)).GetBoard().([]bool)
-	expected = []bool{false, false, false, false, false}
-	t.Log("In id 70\n")
-	AutomatonCorrectnessChecker(t, got, expected)
+	t.Logf("\n\nFault_cases: %v\n", fault_cases)
 }
 
 func TestAutomaton2DTimeLapsPreview(t *testing.T) {
 	t.Log("Preview testing\n")
 	defer t.Log("Preview testing finished\n")
 
-	automata := initAutomata()
+	automata, _ := InitialState()
+	states := PossibleStates()
 	timeLaps := logic.NewTimeLaps(&automata)
 	timeLaps.Next()
 
-	got := (*timeLaps.Previous()).GetBoard().([]bool)
-	expected := []bool{true, false, true, false, false}
-	AutomatonCorrectnessChecker(t, got, expected)
+	got := (*timeLaps.Previous()).GetBoard().([][]bool)
+	expected := states[0]
+	Automaton2DCorrectnessChecker(t, got, expected)
 }

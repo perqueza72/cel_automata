@@ -91,27 +91,22 @@ func TestAutomatonTimeLapsGet(t *testing.T) {
 
 	got := (*timeLaps.Get(0)).GetBoard().([]bool)
 	expected := []bool{true, false, true, false, false}
-	t.Log("In id 0\n")
 	AutomatonCorrectnessChecker(t, got, expected)
 
 	got = (*timeLaps.Get(1)).GetBoard().([]bool)
 	expected = []bool{false, true, false, false, false}
-	t.Log("In id 1\n")
 	AutomatonCorrectnessChecker(t, got, expected)
 
 	got = (*timeLaps.Get(2)).GetBoard().([]bool)
 	expected = []bool{true, false, false, false, false}
-	t.Log("In id 2\n")
 	AutomatonCorrectnessChecker(t, got, expected)
 
 	got = (*timeLaps.Get(3)).GetBoard().([]bool)
 	expected = []bool{false, false, false, false, false}
-	t.Log("In id 3\n")
 	AutomatonCorrectnessChecker(t, got, expected)
 
 	got = (*timeLaps.Get(70)).GetBoard().([]bool)
 	expected = []bool{false, false, false, false, false}
-	t.Log("In id 70\n")
 	AutomatonCorrectnessChecker(t, got, expected)
 }
 
