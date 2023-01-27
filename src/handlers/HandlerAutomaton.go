@@ -10,8 +10,13 @@ import (
 	"strconv"
 )
 
-func enableCors(w *http.ResponseWriter) {
+func enableCors(w *http.ResponseWriter, requestMethod string) bool {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "*")
+	(*w).Header().Set("Access-Control-Allow-Headers", "*")
+	(*w).WriteHeader(http.StatusAccepted)
+
+	return requestMethod == "OPTIONS"
 }
 
 type AutomatonHandler struct {
@@ -19,7 +24,10 @@ type AutomatonHandler struct {
 }
 
 func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	skip := enableCors(&w, r.Method)
+	if skip {
+		return
+	}
 
 	body_automaton := models.Automaton1D{}
 
@@ -38,7 +46,10 @@ func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Req
 }
 
 func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	skip := enableCors(&w, r.Method)
+	if skip {
+		return
+	}
 
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
@@ -50,7 +61,10 @@ func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	skip := enableCors(&w, r.Method)
+	if skip {
+		return
+	}
 
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
@@ -63,7 +77,10 @@ func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	skip := enableCors(&w, r.Method)
+	if skip {
+		return
+	}
 
 	if h.timeLaps == nil {
 		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
@@ -85,7 +102,10 @@ func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AutomatonHandler) HandlerAutomaton2D(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	skip := enableCors(&w, r.Method)
+	if skip {
+		return
+	}
 
 	body_automaton := models.Automaton2D{}
 
