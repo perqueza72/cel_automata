@@ -32,19 +32,32 @@ func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Req
 }
 
 func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
-	automata := h.timeLaps.Next()
+	if h.timeLaps == nil {
+		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		return
+	}
 
+	automata := h.timeLaps.Next()
 	fmt.Fprintln(w, (*automata).GetBoard())
 }
 
 func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Request) {
-	automata := h.timeLaps.Previous()
+	if h.timeLaps == nil {
+		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		return
+	}
 
+	automata := h.timeLaps.Previous()
 	fmt.Fprintln(w, (*automata).GetBoard())
 
 }
 
 func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
+
+	if h.timeLaps == nil {
+		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		return
+	}
 
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "Error getting id value. %v", err)
