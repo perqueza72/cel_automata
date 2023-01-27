@@ -73,8 +73,8 @@ func (at *Automata2D) Transition() *IAutomataCellular {
 		}
 	}
 
-	new_automata := at.Copy()
 	at.id = at.id + 1
+	new_automata := at.Copy()
 
 	return new_automata
 }
