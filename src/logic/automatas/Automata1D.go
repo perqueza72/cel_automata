@@ -55,7 +55,6 @@ func (automata *Automata1D) Transition() *IAutomataCellular {
 	}
 
 	new_automata := automata.Copy()
-	fmt.Println("automata ", (*new_automata).GetId())
 	automata.id = automata.id + 1
 
 	return new_automata
