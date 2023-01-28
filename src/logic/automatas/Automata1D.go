@@ -2,7 +2,6 @@ package automatas
 
 import (
 	logic "automata_logic"
-	"fmt"
 	. "own_interfaces"
 )
 
@@ -65,7 +64,6 @@ func (automata Automata1D) GetBoard() interface{} {
 	states := make([]bool, 0)
 
 	for _, v := range automata.board {
-		fmt.Printf("%v", v.GetState())
 		states = append(states, v.GetState())
 	}
 

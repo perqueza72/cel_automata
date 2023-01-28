@@ -3,7 +3,6 @@ package handlers
 import (
 	logic "automata_logic"
 	"encoding/json"
-	"fmt"
 	mappers "mappers_automata"
 	models "models_automata"
 	"net/http"
@@ -32,7 +31,8 @@ func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Req
 	body_automaton := models.Automaton1D{}
 
 	if err := json.NewDecoder(r.Body).Decode(&body_automaton); err != nil {
-		fmt.Fprintf(w, "Error getting Json request: %v", err)
+
+		json.NewEncoder(w).Encode(err)
 
 		return
 
@@ -42,7 +42,8 @@ func (h *AutomatonHandler) HandlerAutomaton1D(w http.ResponseWriter, r *http.Req
 	timeLaps := logic.ITimeLaps(logic.NewTimeLaps(&automaton))
 	h.timeLaps = timeLaps
 
-	fmt.Fprintln(w, automaton.GetBoard())
+	json.NewEncoder(w).Encode(automaton.GetBoard())
+
 }
 
 func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
@@ -52,12 +53,12 @@ func (h *AutomatonHandler) HandlerNext(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if h.timeLaps == nil {
-		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Automata not sendend.")
 		return
 	}
 
 	automata := h.timeLaps.Next()
-	fmt.Fprintln(w, (*automata).GetBoard())
+	json.NewEncoder(w).Encode((*automata).GetBoard())
 }
 
 func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Request) {
@@ -67,12 +68,12 @@ func (h *AutomatonHandler) HandlerPrevious(w http.ResponseWriter, r *http.Reques
 	}
 
 	if h.timeLaps == nil {
-		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Automata not sendend.")
 		return
 	}
 
 	automata := h.timeLaps.Previous()
-	fmt.Fprintln(w, (*automata).GetBoard())
+	json.NewEncoder(w).Encode((*automata).GetBoard())
 
 }
 
@@ -83,22 +84,22 @@ func (h *AutomatonHandler) HandlerGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if h.timeLaps == nil {
-		fmt.Fprintf(w, "Automata not sendend. %v", http.StatusBadRequest)
+		json.NewEncoder(w).Encode("Automata not sendend.")
 		return
 	}
 
 	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "Error getting id value. %v", err)
+		json.NewEncoder(w).Encode(err)
 	}
 
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
-		fmt.Fprintf(w, "Id must be integer value. %v", err)
+		json.NewEncoder(w).Encode(err)
 	}
 
 	automata := h.timeLaps.Get(uint(id))
-	fmt.Fprintln(w, (*automata).GetBoard())
 
+	json.NewEncoder(w).Encode((*automata).GetBoard())
 }
 
 func (h *AutomatonHandler) HandlerAutomaton2D(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +111,7 @@ func (h *AutomatonHandler) HandlerAutomaton2D(w http.ResponseWriter, r *http.Req
 	body_automaton := models.Automaton2D{}
 
 	if err := json.NewDecoder(r.Body).Decode(&body_automaton); err != nil {
-		fmt.Fprintf(w, "Error getting Json request: %v", err)
+		json.NewEncoder(w).Encode(err)
 
 		return
 	}
@@ -119,5 +120,5 @@ func (h *AutomatonHandler) HandlerAutomaton2D(w http.ResponseWriter, r *http.Req
 	timeLaps := logic.ITimeLaps(logic.NewTimeLaps(&automaton))
 	h.timeLaps = timeLaps
 
-	fmt.Fprintln(w, automaton.GetBoard())
+	json.NewEncoder(w).Encode(automaton.GetBoard())
 }

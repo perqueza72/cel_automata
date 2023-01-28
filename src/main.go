@@ -9,7 +9,6 @@ import (
 
 func main() {
 
-	fmt.Println("Automata started :)")
 	handler := handlers.AutomatonHandler{}
 
 	http.HandleFunc("/automaton/init_automaton1D", handler.HandlerAutomaton1D)
@@ -18,6 +17,7 @@ func main() {
 	http.HandleFunc("/automaton/previous", handler.HandlerPrevious)
 	http.HandleFunc("/automaton/next", handler.HandlerNext)
 
+	fmt.Println("Automata started :)")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
