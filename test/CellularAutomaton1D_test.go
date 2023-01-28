@@ -27,8 +27,7 @@ func initPattern() IPattern {
 	return pattern
 }
 
-func initAutomata() IAutomataCellular {
-	states := [5]bool{true, false, true, false, false}
+func initAutomata(states []bool) IAutomataCellular {
 
 	cells := make([]ICell, 0)
 
@@ -41,16 +40,37 @@ func initAutomata() IAutomataCellular {
 	return automatas.NewAutomata1D(cells, &pattern, 0)
 }
 
+func InitialStateAutomaton1D() IAutomataCellular {
+	return initAutomata([]bool{true, false, true, false, false})
+}
+
+func TestAutomaton1DDummie(t *testing.T) {
+	automata := initAutomata([]bool{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false})
+	timeLaps := logic.NewTimeLaps(&automata)
+	new_automata := timeLaps.Next()
+
+	got := (*new_automata).GetBoard().([]bool)
+	expect := []bool{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
+
+	AutomatonCorrectnessChecker(t, got, expect)
+}
+
 func TestAutomaton1D(t *testing.T) {
 
-	automata := initAutomata()
-	new_automata := automata.Transition()
+	automata := InitialStateAutomaton1D()
+	timeLaps := logic.NewTimeLaps(&automata)
+	new_automata := timeLaps.Next()
 
 	got := (*new_automata).GetBoard().([]bool)
 	expected := []bool{false, true, false, false, false}
 
 	AutomatonCorrectnessChecker(t, got, expected)
 }
+
+// func TestDestructorDeDavid1D(t *testing.T){
+// 	automata := initAutomata()
+// 	new_automata := aut
+// }
 
 func AutomatonCorrectnessChecker(t *testing.T, got []bool, expected []bool) {
 	for i := range got {
@@ -62,7 +82,7 @@ func AutomatonCorrectnessChecker(t *testing.T, got []bool, expected []bool) {
 }
 
 func TestAutomatonTimeLapsNext(t *testing.T) {
-	automata := initAutomata()
+	automata := InitialStateAutomaton1D()
 
 	timeLaps := logic.NewTimeLaps(&automata)
 	got := (*timeLaps.Next()).GetBoard().([]bool)
@@ -81,7 +101,7 @@ func TestAutomatonTimeLapsNext(t *testing.T) {
 }
 
 func TestAutomatonTimeLapsGet(t *testing.T) {
-	automata := initAutomata()
+	automata := InitialStateAutomaton1D()
 
 	timeLaps := logic.NewTimeLaps(&automata)
 
@@ -114,7 +134,7 @@ func TestAutomatonTimeLapsPreview(t *testing.T) {
 	t.Log("Preview testing\n")
 	defer t.Log("Preview testing finished\n")
 
-	automata := initAutomata()
+	automata := InitialStateAutomaton1D()
 	timeLaps := logic.NewTimeLaps(&automata)
 	timeLaps.Next()
 
